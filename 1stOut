@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1st Out Tasks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .task-container {
+            display: inline-block;
+            text-align: left;
+        }
+        .hidden-message {
+            display: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>1st Out Tasks</h1>
+    <div class="task-container">
+        <label><input type="checkbox" class="task-checkbox"> Empty trashes and replace bags</label><br>
+        <label><input type="checkbox" class="task-checkbox"> Run trash bags and recycle boxes</label><br>
+        <label><input type="checkbox" class="task-checkbox"> Sweep and mop back-hallway</label><br>
+        <label><input type="checkbox" class="task-checkbox"> Sweep and mop produce and wing coolers</label><br>
+        <label><input type="checkbox" class="task-checkbox"> Sweep and mop behind your station</label><br>
+        <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
+    </div>
+    <p id="message" class="hidden-message">Checkout with your closing cook</p>
+    
+    <script>
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        const message = document.getElementById('message');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if ([...checkboxes].every(cb => cb.checked)) {
+                    document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
