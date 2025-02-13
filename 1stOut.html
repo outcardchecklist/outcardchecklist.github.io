@@ -11,10 +11,21 @@
             background-color: #FFF;
             color: #000;
             text-align: center;
-            margin: 50px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 70%;
+            max-width: 800px;
+            padding: 30px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
         }
         .task-container {
-            display: inline-block;
             text-align: left;
         }
         .hidden-message {
@@ -29,16 +40,18 @@
     </style>
 </head>
 <body>
-    <h1>1st Out Tasks</h1>
-    <div class="task-container">
-        <label><input type="checkbox" class="task-checkbox"> Empty trashes and replace bags</label><br>
-        <label><input type="checkbox" class="task-checkbox"> Run trash bags and recycle boxes</label><br>
-        <label><input type="checkbox" class="task-checkbox"> Sweep and mop back-hallway</label><br>
-        <label><input type="checkbox" class="task-checkbox"> Sweep and mop produce and wing coolers</label><br>
-        <label><input type="checkbox" class="task-checkbox"> Sweep and mop behind your station</label><br>
-        <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
+    <div class="container">
+        <h1>1st Out Tasks</h1>
+        <div class="task-container">
+            <label><input type="checkbox" class="task-checkbox"> Empty trashes and replace bags</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Run trash bags and recycle boxes</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Sweep and mop back-hallway</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Sweep and mop produce and wing coolers</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Sweep and mop behind your station</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
+        </div>
+        <p id="message" class="hidden-message">Checkout with your closing cook</p>
     </div>
-    <p id="message" class="hidden-message">Checkout with your closing cook</p>
     
     <script>
         const checkboxes = document.querySelectorAll('.task-checkbox');
