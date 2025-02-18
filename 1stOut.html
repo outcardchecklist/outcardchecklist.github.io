@@ -56,10 +56,24 @@
     <script>
         const checkboxes = document.querySelectorAll('.task-checkbox');
         const message = document.getElementById('message');
+        
+ function saveCompletion() {
+            const timestamp = new Date().toLocaleString();
+            const outCard = "1st Out"; // Adjust this for different pages
+
+            // Retrieve existing history from LocalStorage
+            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+
+            // Add new completion record
+            history.push({ outCard: outCard, completedAt: timestamp });
+
+            // Save updated history back to LocalStorage
+            localStorage.setItem("completionHistory", JSON.stringify(history));
 
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 if ([...checkboxes].every(cb => cb.checked)) {
+                    saveCompletion();
                     document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
                 }
             });
