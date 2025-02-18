@@ -56,6 +56,12 @@
     <script>
         const checkboxes = document.querySelectorAll('.task-checkbox');
         const message = document.getElementById('message');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if ([...checkboxes].every(cb => cb.checked)) {
+                    document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
+                }
         
  function saveCompletion() {
             const timestamp = new Date().toLocaleString();
@@ -70,11 +76,6 @@
             // Save updated history back to LocalStorage
             localStorage.setItem("completionHistory", JSON.stringify(history));
 
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                if ([...checkboxes].every(cb => cb.checked)) {
-                    document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
-                }
                   checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 if ([...checkboxes].every(cb => cb.checked)) {
