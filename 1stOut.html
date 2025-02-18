@@ -73,8 +73,12 @@
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 if ([...checkboxes].every(cb => cb.checked)) {
-                    saveCompletion();
                     document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
+                }
+                  checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if ([...checkboxes].every(cb => cb.checked)) {
+                    saveCompletion();
                 }
             });
         });
