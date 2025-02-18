@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completion History</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif;
+            background-color: #FFF;
+            text-align: center;
+            margin: 50px;
+        }
+        .history-container {
+            width: 70%;
+            margin: auto;
+            text-align: left;
+        }
+        .history-button {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #eee;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Completion History</h1>
+    <div class="history-container">
+        <ul id="history-list"></ul>
+    </div>
+    <button class="history-button" onclick="clearHistory()">Clear History</button>
+    <button class="history-button" onclick="location.href='index.html'">Back to Home</button>
+
+    <script>
+        function loadHistory() {
+            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+            let historyList = document.getElementById("history-list");
+
+            historyList.innerHTML = ""; // Clear old data
+
+            history.forEach(entry => {
+                let listItem = document.createElement("li");
+                listItem.textContent = `${entry.outCard} completed at ${entry.completedAt}`;
+                historyList.appendChild(listItem);
+            });
+        }
+
+        function clearHistory() {
+            localStorage.removeItem("completionHistory");
+            loadHistory();
+        }
+
+        loadHistory(); // Load history when page opens
+    </script>
+</body>
+</html>
 
