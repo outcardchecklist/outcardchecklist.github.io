@@ -53,7 +53,7 @@
     </div>
     
     <script>
-        const checkboxes = document.querySelectorAll('.task-checkbox');
+       const checkboxes = document.querySelectorAll('.task-checkbox');
         const message = document.getElementById('message');
 
         function saveCompletion() {
@@ -71,9 +71,6 @@
                 if ([...checkboxes].every(cb => cb.checked)) {
                     saveCompletion();
                     document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
-                }
-            });
-        });
                 }
             });
         });
