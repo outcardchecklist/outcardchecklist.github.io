@@ -47,6 +47,14 @@
     <button class="history-button" onclick="location.href='index.html'">Back to Home</button>
 
     <script>
+        function checkPassword() {
+            const password = prompt("Enter password:");
+            if (password !== "123") {
+                alert("Access Denied!");
+                window.location.href = "index.html"; // Redirect back if wrong
+            }
+        }
+
         function loadHistory() {
             let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
             let historyList = document.getElementById("history-list");
@@ -65,8 +73,9 @@
             loadHistory();
         }
 
-        loadHistory(); // Load history when page opens
+        // Run password check before loading the page
+        checkPassword();
+        loadHistory();
     </script>
 </body>
 </html>
-
