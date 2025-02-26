@@ -63,7 +63,7 @@
 
             history.forEach(entry => {
                 let listItem = document.createElement("li");
-                listItem.textContent = `${entry.outCard} completed at ${entry.completedAt}`;
+                listItem.textContent = `${entry.outCard} completed by ${entry.completedBy} at ${entry.completedAt}`;
                 historyList.appendChild(listItem);
             });
         }
