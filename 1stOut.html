@@ -54,7 +54,10 @@
     </div>
     
     <script>
-        const name = prompt("Enter your name:"); // Ask for name
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+
+        function saveCompletion() {
+            const name = prompt("Enter your name:"); // Ask for name
             if (!name) return; // Don't proceed if no name is entered
 
             const timestamp = new Date().toLocaleString();
