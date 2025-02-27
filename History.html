@@ -46,35 +46,38 @@
     <button class="history-button" onclick="clearHistory()">Clear History</button>
     <button class="history-button" onclick="location.href='index.html'">Back to Home</button>
 
-    <script>
-        function checkPassword() {
-            const password = prompt("Enter password to view history:");
-            if (password !== "123") {
-                alert("Incorrect password! Access denied.");
-                window.location.href = "index.html";
-            }
+  <script>
+    function checkPassword() {
+        const password = prompt("Enter password to view history:");
+        if (password !== "123") {
+            alert("Incorrect password! Access denied.");
+            window.location.href = "index.html";
         }
+    }
 
-        function loadHistory() {
-            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-            let historyList = document.getElementById("history-list");
+    function loadHistory() {
+        let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+        let historyList = document.getElementById("history-list");
 
-            historyList.innerHTML = "";
+        historyList.innerHTML = "";
 
-            history.forEach(entry => {
-                let listItem = document.createElement("li");
-                listItem.innerHTML = `<strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt} <br> <em>Closing MOD: ${entry.mod || "Not Set"}</em>`;
-                historyList.appendChild(listItem);
-            });
-        }
+        history.forEach(entry => {
+            let listItem = document.createElement("li");
+            listItem.innerHTML = `
+                <strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt} 
+                <br> <em>Closing MOD: ${entry.mod || "Not Set"}</em>
+            `;
+            historyList.appendChild(listItem);
+        });
+    }
 
-        function clearHistory() {
-            localStorage.removeItem("completionHistory");
-            loadHistory();
-        }
-
-        checkPassword();  // Require password before showing history
+    function clearHistory() {
+        localStorage.removeItem("completionHistory");
         loadHistory();
-    </script>
+    }
+
+    checkPassword();  // Require password before showing history
+    loadHistory();
+</script>
 </body>
 </html>
