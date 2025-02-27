@@ -15,6 +15,12 @@
             font-size: 16px;
             font-weight: bold;
         }
+        #mod-display {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: darkblue;
+        }
     </style>
 </head>
 <body>
@@ -30,26 +36,37 @@
             <button class="outcard-button" onclick="location.href='History.html'">History</button>
             <button class="mod-button" onclick="enterClosingMOD()">Enter Closing MOD</button>
         </div>
+        <p id="mod-display">Current MOD: Loading...</p>
     </div>
 
     <script>
+        // Function to update displayed MOD
+        function updateMODDisplay() {
+            let currentMOD = localStorage.getItem("closingMOD") || "None assigned";
+            document.getElementById("mod-display").textContent = `Current MOD: ${currentMOD}`;
+        }
+
         function enterClosingMOD() {
             const password = prompt("Enter password to set Closing MOD:");
-            if (password !== "123") {
+            if (password !== "123") { // Change this to the actual password
                 alert("Incorrect password!");
                 return;
             }
 
-            const modName = prompt("Enter Closing MOD's name:");
-            if (!modName) return;
+            let currentMOD = localStorage.getItem("closingMOD") || "None assigned";
+            const modName = prompt(`Current MOD: ${currentMOD}\nEnter new Closing MOD's name (or press Cancel to keep current):`);
 
-            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-            history.push({ mod: modName, timestamp: new Date().toLocaleString() });
-
-            localStorage.setItem("completionHistory", JSON.stringify(history));
-
-            alert(`Closing MOD set to: ${modName}`);
+            if (modName !== null && modName.trim() !== "") {
+                localStorage.setItem("closingMOD", modName);
+                alert(`Closing MOD set to: ${modName}`);
+                updateMODDisplay(); // Update UI
+            } else {
+                alert("Closing MOD remains unchanged.");
+            }
         }
+
+        // Ensure MOD persists on refresh
+        document.addEventListener("DOMContentLoaded", updateMODDisplay);
     </script>
 </body>
 </html>
