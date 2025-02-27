@@ -56,36 +56,34 @@
     <script>
       const checkboxes = document.querySelectorAll(".task-checkbox");
 
-        function saveCompletion() {
-            const name = prompt("Enter your name:");
-            if (!name) return; // Don't proceed if no name is entered
+           function saveCompletion() {
+        const name = prompt("Enter your name:");
+        if (!name) return;
 
-            const timestamp = new Date().toLocaleString();
-            const outCard = "1st Out";
+        const timestamp = new Date().toLocaleString();
+        const outCard = "1st Out";
 
-            // Retrieve the Closing MOD from localStorage
-            let closingMOD = localStorage.getItem("closingMOD") || "None assigned";
-
-            // Retrieve existing history from LocalStorage
-            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-
-            // Add new completion record with Closing MOD included
-            history.push({ outCard, completedBy: name, completedAt: timestamp, closingMOD });
-
-            // Save updated history back to LocalStorage
-            localStorage.setItem("completionHistory", JSON.stringify(history));
-
-            // Display confirmation message
-            document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+        // Retrieve the currently saved MOD
+        let currentMOD = localStorage.getItem("closingMOD");
+        if (!currentMOD) {
+            alert("Closing MOD has not been set. Please set it first.");
+            return;
         }
 
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                if ([...checkboxes].every(cb => cb.checked)) {
-                    saveCompletion();
-                }
-            });
+        let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+
+        // Attach MOD to each entry
+        history.push({
+            outCard: outCard,
+            completedBy: name,
+            completedAt: timestamp,
+            mod: currentMOD  // This should store the MOD correctly
         });
+
+        localStorage.setItem("completionHistory", JSON.stringify(history));
+
+        document.body.innerHTML = '<h1>Checkout with your closing cook</h1>';
+    }
     </script>
 </body>
 </html>
