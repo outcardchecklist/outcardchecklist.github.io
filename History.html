@@ -47,6 +47,7 @@
     <button class="history-button" onclick="location.href='index.html'">Back to Home</button>
 
   <script>
+   <script>
     function checkPassword() {
         const password = prompt("Enter password to view history:");
         if (password !== "123") {
@@ -57,15 +58,16 @@
 
     function loadHistory() {
         let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-        let historyList = document.getElementById("history-list");
+        let currentMOD = localStorage.getItem("closingMOD") || "Not Set"; // Get the latest MOD
 
+        let historyList = document.getElementById("history-list");
         historyList.innerHTML = "";
 
         history.forEach(entry => {
             let listItem = document.createElement("li");
             listItem.innerHTML = `
-                <strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt} 
-                <br> <em>Closing MOD: ${entry.mod || "Not Set"}</em>
+                <strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt}
+                <br> <em>Closing MOD: ${currentMOD}</em>
             `;
             historyList.appendChild(listItem);
         });
