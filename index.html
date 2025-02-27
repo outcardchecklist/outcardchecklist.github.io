@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Your Outcard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .mod-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #FFD700;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -17,7 +28,28 @@
             <button class="outcard-button" onclick="location.href='LateOut.html'">Late Out</button>
             <button class="outcard-button" onclick="location.href='Close.html'">Closing Shift</button>
             <button class="outcard-button" onclick="location.href='History.html'">History</button>
+            <button class="mod-button" onclick="enterClosingMOD()">Enter Closing MOD</button>
         </div>
     </div>
+
+    <script>
+        function enterClosingMOD() {
+            const password = prompt("Enter password to set Closing MOD:");
+            if (password !== "123") {
+                alert("Incorrect password!");
+                return;
+            }
+
+            const modName = prompt("Enter Closing MOD's name:");
+            if (!modName) return;
+
+            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+            history.push({ mod: modName, timestamp: new Date().toLocaleString() });
+
+            localStorage.setItem("completionHistory", JSON.stringify(history));
+
+            alert(`Closing MOD set to: ${modName}`);
+        }
+    </script>
 </body>
 </html>
