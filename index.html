@@ -40,22 +40,33 @@
     </div>
 
     <script>
-    function setClosingMOD() {
-        const password = prompt("Enter password:");
-        if (password !== "123") {
-            alert("Incorrect password! Access denied.");
-            return;
+        // Function to update displayed MOD
+        function updateMODDisplay() {
+            let currentMOD = localStorage.getItem("closingMOD") || "None assigned";
+            document.getElementById("mod-display").textContent = `Current MOD: ${currentMOD}`;
         }
 
-        let currentMOD = localStorage.getItem("closingMOD") || "Unknown";
-        const newMOD = prompt(`Current MOD: ${currentMOD}\nEnter new Closing MOD:`);
+        function enterClosingMOD() {
+            const password = prompt("Enter password to set Closing MOD:");
+            if (password !== "123") { // Change this to the actual password
+                alert("Incorrect password!");
+                return;
+            }
 
-        if (newMOD) {
-            localStorage.setItem("closingMOD", newMOD);
-            alert(`Closing MOD set to: ${newMOD}`);
+            let currentMOD = localStorage.getItem("closingMOD") || "None assigned";
+            const modName = prompt(`Current MOD: ${currentMOD}\nEnter new Closing MOD's name (or press Cancel to keep current):`);
+
+            if (modName !== null && modName.trim() !== "") {
+                localStorage.setItem("closingMOD", modName);
+                alert(`Closing MOD set to: ${modName}`);
+                updateMODDisplay(); // Update UI
+            } else {
+                alert("Closing MOD remains unchanged.");
+            }
         }
-    }
-</script>
 
+        // Ensure MOD persists on refresh
+        document.addEventListener("DOMContentLoaded", updateMODDisplay);
+    </script>
 </body>
 </html>
