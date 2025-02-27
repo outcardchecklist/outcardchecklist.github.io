@@ -48,10 +48,10 @@
 
     <script>
         function checkPassword() {
-            const password = prompt("Enter password:");
+            const password = prompt("Enter password to view history:");
             if (password !== "123") {
-                alert("Access Denied!");
-                window.location.href = "index.html"; // Redirect back if wrong
+                alert("Incorrect password! Access denied.");
+                window.location.href = "index.html";
             }
         }
 
@@ -59,11 +59,11 @@
             let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
             let historyList = document.getElementById("history-list");
 
-            historyList.innerHTML = ""; // Clear old data
+            historyList.innerHTML = "";
 
             history.forEach(entry => {
                 let listItem = document.createElement("li");
-                listItem.textContent = `${entry.outCard} completed by ${entry.completedBy} at ${entry.completedAt}`;
+                listItem.innerHTML = `<strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt} <br> <em>Closing MOD: ${entry.mod || "Not Set"}</em>`;
                 historyList.appendChild(listItem);
             });
         }
@@ -73,8 +73,7 @@
             loadHistory();
         }
 
-        // Run password check before loading the page
-        checkPassword();
+        checkPassword();  // Require password before showing history
         loadHistory();
     </script>
 </body>
