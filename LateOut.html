@@ -51,31 +51,53 @@
         </div>
         <p id="message" class="hidden-message">Checkout with your closing cook</p>
     </div>
-    
-    <script>
-       const checkboxes = document.querySelectorAll(".task-checkbox");
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+            authDomain: "outcardchecklist.firebaseapp.com",
+            projectId: "outcardchecklist",
+            storageBucket: "outcardchecklist.appspot.com",
+            messagingSenderId: "896455842388",
+            appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+            measurementId: "G-ZT882MFNZP",
+            databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const checkboxes = document.querySelectorAll(".task-checkbox");
 
         function saveCompletion() {
             const name = prompt("Enter your name:");
-            if (!name) return; // Don't proceed if no name is entered
+            if (!name) return;
 
             const timestamp = new Date().toLocaleString();
             const outCard = "Late Out";
 
-            // Retrieve the Closing MOD from localStorage
-            let closingMOD = localStorage.getItem("closingMOD") || "None assigned";
+            get(ref(db, "closingMOD")).then((snapshot) => {
+                const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
 
-            // Retrieve existing history from LocalStorage
-            let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+                const entry = {
+                    outCard,
+                    completedBy: name,
+                    completedAt: timestamp,
+                    modAtTime
+                };
 
-            // Add new completion record with Closing MOD included
-            history.push({ outCard, completedBy: name, completedAt: timestamp, closingMOD });
+                let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+                history.push(entry);
+                localStorage.setItem("completionHistory", JSON.stringify(history));
 
-            // Save updated history back to LocalStorage
-            localStorage.setItem("completionHistory", JSON.stringify(history));
-
-            // Display confirmation message
-            document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+                document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+            }).catch((error) => {
+                alert("Failed to retrieve closing MOD from Firebase.");
+                console.error(error);
+            });
         }
 
         checkboxes.forEach(checkbox => {
