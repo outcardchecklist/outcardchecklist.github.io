@@ -64,7 +64,8 @@
         const modRef = db.ref("closingMOD");
 
         function updateMODDisplay(name) {
-            document.getElementById("mod-display").textContent = `Current MOD: ${name || "None assigned"}`;
+            const displayName = name && name.trim() !== "" ? name : "None assigned";
+            document.getElementById("mod-display").textContent = `Current MOD: ${displayName}`;
         }
 
         function enterClosingMOD() {
@@ -78,21 +79,17 @@
             const modName = prompt(`Current MOD: ${currentMOD}\nEnter new Closing MOD's name (or press Cancel to keep current):`);
 
             if (modName !== null && modName.trim() !== "") {
-                modRef.set(modName.trim()); // Save to Firebase DB
+                modRef.set(modName.trim());
                 alert(`Closing MOD set to: ${modName}`);
             } else {
                 alert("Closing MOD remains unchanged.");
             }
         }
 
-        // Listen for changes from Firebase in real-time
+        // Realtime listener
         modRef.on("value", (snapshot) => {
             const modName = snapshot.val();
             updateMODDisplay(modName);
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            updateMODDisplay("Loading...");
         });
     </script>
 </body>
