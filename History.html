@@ -46,10 +46,9 @@
     <button class="history-button" onclick="clearHistory()">Clear History</button>
     <button class="history-button" onclick="location.href='index.html'">Back to Home</button>
 
-    <!-- Firebase scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
@@ -63,7 +62,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const database = getDatabase(app);
 
         function checkPassword() {
             const password = prompt("Enter password to view history:");
@@ -76,15 +75,23 @@
         async function loadHistory() {
             let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
 
-            // Fetch MOD from Firebase
-            const modSnapshot = await get(child(ref(db), 'currentMOD'));
-            let currentMOD = modSnapshot.exists() ? modSnapshot.val() : "Not Set";
+            const modRef = ref(database, 'closingMOD'); // ✅ Correct key here
+            let currentMOD = "Not Set";
 
-            let historyList = document.getElementById("history-list");
+            try {
+                const snapshot = await get(modRef);
+                if (snapshot.exists()) {
+                    currentMOD = snapshot.val();
+                }
+            } catch (error) {
+                console.error("Error fetching closingMOD:", error);
+            }
+
+            const historyList = document.getElementById("history-list");
             historyList.innerHTML = "";
 
             history.forEach(entry => {
-                let listItem = document.createElement("li");
+                const listItem = document.createElement("li");
                 listItem.innerHTML = `
                     <strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt}
                     <br> <em>Closing MOD: ${currentMOD}</em>
