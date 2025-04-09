@@ -75,7 +75,7 @@
         async function loadHistory() {
             let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
 
-            const modRef = ref(database, 'closingMOD'); // ✅ Correct key here
+            const modRef = ref(database, 'closingMOD');
             let currentMOD = "Not Set";
 
             try {
@@ -104,6 +104,9 @@
             localStorage.removeItem("completionHistory");
             loadHistory();
         }
+
+        // Make clearHistory globally accessible
+        window.clearHistory = clearHistory;
 
         checkPassword();
         loadHistory();
