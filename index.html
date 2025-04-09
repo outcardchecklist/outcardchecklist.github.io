@@ -39,54 +39,61 @@
         <p id="mod-display">Current MOD: Loading...</p>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
     <script>
-        // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// https://firebase.google.com/docs/web/setup#available-libraries
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+            authDomain: "outcardchecklist.firebaseapp.com",
+            projectId: "outcardchecklist",
+            storageBucket: "outcardchecklist.firebasestorage.app",
+            messagingSenderId: "896455842388",
+            appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+            measurementId: "G-ZT882MFNZP",
+            databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+        };
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
-  authDomain: "outcardchecklist.firebaseapp.com",
-  projectId: "outcardchecklist",
-  storageBucket: "outcardchecklist.firebasestorage.app",
-  messagingSenderId: "896455842388",
-  appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
-  measurementId: "G-ZT882MFNZP"
-};
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const db = firebase.database();
+        const modRef = db.ref("closingMOD");
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-        // Function to update displayed MOD
-        function updateMODDisplay() {
-            let currentMOD = localStorage.getItem("closingMOD") || "None assigned";
-            document.getElementById("mod-display").textContent = `Current MOD: ${currentMOD}`;
+        function updateMODDisplay(name) {
+            document.getElementById("mod-display").textContent = `Current MOD: ${name || "None assigned"}`;
         }
 
         function enterClosingMOD() {
             const password = prompt("Enter password to set Closing MOD:");
-            if (password !== "123") { // Change this to the actual password
+            if (password !== "123") {
                 alert("Incorrect password!");
                 return;
             }
 
-            let currentMOD = localStorage.getItem("closingMOD") || "None assigned";
+            const currentMOD = document.getElementById("mod-display").textContent.replace("Current MOD: ", "");
             const modName = prompt(`Current MOD: ${currentMOD}\nEnter new Closing MOD's name (or press Cancel to keep current):`);
 
             if (modName !== null && modName.trim() !== "") {
-                localStorage.setItem("closingMOD", modName);
+                modRef.set(modName.trim()); // Save to Firebase DB
                 alert(`Closing MOD set to: ${modName}`);
-                updateMODDisplay(); // Update UI
             } else {
                 alert("Closing MOD remains unchanged.");
             }
         }
 
-        // Ensure MOD persists on refresh
-        document.addEventListener("DOMContentLoaded", updateMODDisplay);
+        // Listen for changes from Firebase in real-time
+        modRef.on("value", (snapshot) => {
+            const modName = snapshot.val();
+            updateMODDisplay(modName);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateMODDisplay("Loading...");
+        });
     </script>
 </body>
 </html>
