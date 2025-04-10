@@ -3,105 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Completion History</title>
-    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Oswald', sans-serif;
-            background-color: #FFF;
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+        }
+        h1 {
             text-align: center;
-            margin: 50px;
         }
-        .history-container {
-            width: 70%;
-            margin: auto;
-            text-align: left;
-        }
-        .history-button {
-            margin: 20px 10px;
-            padding: 10px 20px;
-            background-color: #FFD700;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background: #eee;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
+        .entry {
+            border: 2px solid #000;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
     <h1>Completion History</h1>
-    <div class="history-container">
-        <ul id="history-list"></ul>
-    </div>
-    <button class="history-button" onclick="clearHistory()">Clear History</button>
-    <button class="history-button" onclick="location.href='index.html'">Back to Home</button>
+    <div id="history-container"></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    <script>
+        const container = document.getElementById("history-container");
+        const history = JSON.parse(localStorage.getItem("completionHistory")) || [];
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
-            authDomain: "outcardchecklist.firebaseapp.com",
-            projectId: "outcardchecklist",
-            storageBucket: "outcardchecklist.appspot.com",
-            messagingSenderId: "896455842388",
-            appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
-            measurementId: "G-ZT882MFNZP",
-            databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        function checkPassword() {
-            const password = prompt("Enter password to view history:");
-            if (password !== "123") {
-                alert("Incorrect password! Access denied.");
-                window.location.href = "index.html";
-            }
-        }
-
-        function loadHistory() {
-            const historyRef = ref(db, 'completionHistory');
-            const historyList = document.getElementById("history-list");
-            historyList.innerHTML = "";
-
-            onValue(historyRef, (snapshot) => {
-                historyList.innerHTML = "";
-                const data = snapshot.val();
-                if (data) {
-                    Object.values(data).forEach(entry => {
-                        const li = document.createElement("li");
-                        li.innerHTML = `
-                            <strong>${entry.outCard}</strong> completed by <strong>${entry.completedBy}</strong> at ${entry.completedAt}
-                            <br><em>MOD at time: ${entry.modAtTime || "Not recorded"}</em>
-                        `;
-                        historyList.appendChild(li);
-                    });
-                } else {
-                    historyList.innerHTML = "<li>No history available.</li>";
-                }
+        if (history.length === 0) {
+            container.innerHTML = "<p>No history found.</p>";
+        } else {
+            history.forEach(entry => {
+                const div = document.createElement("div");
+                div.className = "entry";
+                div.innerHTML = `
+                    <strong>Out Card:</strong> ${entry.outCard} <br>
+                    <strong>Completed By:</strong> ${entry.completedBy} <br>
+                    <strong>Completed At:</strong> ${entry.completedAt} <br>
+                    <strong>Closing MOD:</strong> ${entry.modAtTime || "N/A"}
+                `;
+                container.appendChild(div);
             });
         }
-
-        function clearHistory() {
-            if (confirm("Are you sure you want to clear all history?")) {
-                remove(ref(db, 'completionHistory'));
-            }
-        }
-
-        checkPassword();
-        loadHistory();
     </script>
 </body>
 </html>
