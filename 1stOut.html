@@ -1,10 +1,11 @@
+<!-- 1stout.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>1st Out Tasks</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <style>
         body {
             font-family: 'Oswald', sans-serif;
@@ -28,12 +29,6 @@
         .task-container {
             text-align: left;
         }
-        .hidden-message {
-            display: none;
-            font-size: 24px;
-            font-weight: bold;
-            color: green;
-        }
         .task-checkbox {
             margin: 10px;
         }
@@ -50,12 +45,11 @@
             <label><input type="checkbox" class="task-checkbox"> Sweep and mop behind your station</label><br>
             <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
         </div>
-        <p id="message" class="hidden-message">Checkout with your closing cook</p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
@@ -80,31 +74,27 @@
             const timestamp = new Date().toLocaleString();
             const outCard = "1st Out";
 
-            // Get closing MOD from Firebase
-            get(ref(db, "closingMOD")).then((snapshot) => {
-                const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
+            get(ref(db, "closingMOD")).then(snapshot => {
+                const closingMOD = snapshot.exists() ? snapshot.val() : "None assigned";
 
                 const entry = {
                     outCard,
                     completedBy: name,
                     completedAt: timestamp,
-                    modAtTime // ✅ use MOD from Firebase
+                    closingMOD
                 };
 
-                let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-                history.push(entry);
-                localStorage.setItem("completionHistory", JSON.stringify(history));
-
-                // Show message
-                document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
-            }).catch((error) => {
-                alert("Failed to retrieve closing MOD from Firebase.");
-                console.error(error);
+                push(ref(db, "completionHistory"), entry).then(() => {
+                    document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+                }).catch(error => {
+                    alert("Failed to save history to Firebase.");
+                    console.error(error);
+                });
             });
         }
 
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
+            checkbox.addEventListener("change", () => {
                 if ([...checkboxes].every(cb => cb.checked)) {
                     saveCompletion();
                 }
