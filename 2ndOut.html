@@ -1,12 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>2nd Out Tasks</title>
-  <style>
-    body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2nd Out Tasks</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
             font-family: 'Oswald', sans-serif;
             background-color: #FFF;
             color: #000;
@@ -28,72 +28,83 @@
         .task-container {
             text-align: left;
         }
+        .hidden-message {
+            display: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+        }
         .task-checkbox {
             margin: 10px;
         }
-  </style>
+    </style>
 </head>
 <body>
-<div class="container">
-  <h1>2nd Out Tasks</h1>
-  <div class="task-container">
-    <label><input type="checkbox" class="task-checkbox"> Break down and clean all dish bins</label><br/>
-    <label><input type="checkbox" class="task-checkbox"> Clean underneath dish sink and shelves</label><br/>
-    <label><input type="checkbox" class="task-checkbox"> Clean soda fountain drain area</label><br/>
-    <label><input type="checkbox" class="task-checkbox"> Sweep/mop behind dish and trash areas</label><br/>
-    <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br/>
-  </div>
-</div>
+    <div class="container">
+        <h1>2nd Out Tasks</h1>
+        <div class="task-container">
+            <label><input type="checkbox" class="task-checkbox"> Complete pull-thaw</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Set up sauce-containers for morning shift</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Do remaining dishes and clean HBC</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Sweep and mop behind your station</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
+        </div>
+        <p id="message" class="hidden-message">Checkout with your closing cook</p>
+    </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, get, push, child } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
-  authDomain: "outcardchecklist.firebaseapp.com",
-  projectId: "outcardchecklist",
-  storageBucket: "outcardchecklist.appspot.com",
-  messagingSenderId: "896455842388",
-  appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
-  measurementId: "G-ZT882MFNZP",
-  databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+            authDomain: "outcardchecklist.firebaseapp.com",
+            projectId: "outcardchecklist",
+            storageBucket: "outcardchecklist.appspot.com",
+            messagingSenderId: "896455842388",
+            appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+            measurementId: "G-ZT882MFNZP",
+            databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+        };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const checkboxes = document.querySelectorAll(".task-checkbox");
 
-const checkboxes = document.querySelectorAll(".task-checkbox");
+        function saveCompletion() {
+            const name = prompt("Enter your name:");
+            if (!name) return;
 
-function saveCompletion() {
-  const name = prompt("Enter your name:");
-  if (!name) return;
-  const outCard = "2nd Out";
-  const timestamp = new Date().toLocaleString();
+            const timestamp = new Date().toLocaleString();
+            const outCard = "2nd Out";
 
-  get(ref(db, "closingMOD")).then(snapshot => {
-    const closingMOD = snapshot.exists() ? snapshot.val() : "None assigned";
+            get(ref(db, "closingMOD")).then((snapshot) => {
+                const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
 
-    const record = {
-      outCard,
-      completedBy: name,
-      completedAt: timestamp,
-      closingMOD
-    };
+                const entry = {
+                    outCard,
+                    completedBy: name,
+                    completedAt: timestamp,
+                    modAtTime
+                };
 
-    push(ref(db, "completionHistory"), record).then(() => {
-      document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
-    });
-  });
-}
+                const historyRef = ref(db, "completionHistory");
+                push(historyRef, entry);
 
-checkboxes.forEach(cb => {
-  cb.addEventListener("change", () => {
-    if ([...checkboxes].every(box => box.checked)) {
-      saveCompletion();
-    }
-  });
-});
-</script>
+                document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+            }).catch((error) => {
+                alert("Failed to retrieve closing MOD from Firebase.");
+                console.error(error);
+            });
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if ([...checkboxes].every(cb => cb.checked)) {
+                    saveCompletion();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
