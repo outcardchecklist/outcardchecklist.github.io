@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Close Out Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -55,7 +58,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
@@ -90,11 +93,15 @@
                     modAtTime
                 };
 
-                let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-                history.push(entry);
-                localStorage.setItem("completionHistory", JSON.stringify(history));
+                push(ref(db, "completionHistory"), entry)
+                    .then(() => {
+                        document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+                    })
+                    .catch((error) => {
+                        alert("Failed to save history to Firebase.");
+                        console.error(error);
+                    });
 
-                document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
             }).catch((error) => {
                 alert("Failed to retrieve closing MOD from Firebase.");
                 console.error(error);
