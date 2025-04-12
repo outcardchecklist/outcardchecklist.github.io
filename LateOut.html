@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Late Out Tasks</title>
-  <style>
-   body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Late Out Tasks</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
             font-family: 'Oswald', sans-serif;
             background-color: #FFF;
             color: #000;
@@ -27,62 +28,85 @@
         .task-container {
             text-align: left;
         }
+        .hidden-message {
+            display: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+        }
         .task-checkbox {
             margin: 10px;
         }
-  </style>
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Late Out Tasks</h1>
-    <div class="task-container">
-      <label><input type="checkbox" class="task-checkbox"> Put all food away</label><br>
-      <label><input type="checkbox" class="task-checkbox"> Wrap up your station</label><br>
-      <label><input type="checkbox" class="task-checkbox"> Turn off your equipment</label><br>
-      <label><input type="checkbox" class="task-checkbox"> Help others if your work is done</label><br>
+    <div class="container">
+        <h1>Late Out Tasks</h1>
+        <div class="task-container">
+            <label><input type="checkbox" class="task-checkbox"> Clean all sauce pumps</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Clean all shake buckets</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Empty out and refill blood buckets</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Sweep and mop behind your station</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
+        </div>
+        <p id="message" class="hidden-message">Checkout with your closing cook</p>
     </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
-      authDomain: "outcardchecklist.firebaseapp.com",
-      projectId: "outcardchecklist",
-      storageBucket: "outcardchecklist.appspot.com",
-      messagingSenderId: "896455842388",
-      appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
-      measurementId: "G-ZT882MFNZP",
-      databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+            authDomain: "outcardchecklist.firebaseapp.com",
+            projectId: "outcardchecklist",
+            storageBucket: "outcardchecklist.appspot.com",
+            messagingSenderId: "896455842388",
+            appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+            measurementId: "G-ZT882MFNZP",
+            databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const checkboxes = document.querySelectorAll(".task-checkbox");
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    function saveCompletion() {
-      const name = prompt("Enter your name:");
-      if (!name) return;
+        const checkboxes = document.querySelectorAll(".task-checkbox");
 
-      const timestamp = new Date().toLocaleString();
-      const outCard = "Late Out";
+        function saveCompletion() {
+            const name = prompt("Enter your name:");
+            if (!name) return;
 
-      get(ref(db, "closingMOD")).then(snapshot => {
-        const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
-        const entry = { outCard, completedBy: name, completedAt: timestamp, closingMOD: modAtTime };
-        push(ref(db, "completionHistory"), entry);
-        document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
-      }).catch(error => {
-        alert("Failed to save to Firebase.");
-        console.error(error);
-      });
-    }
+            const timestamp = new Date().toLocaleString();
+            const outCard = "Late Out";
 
-    checkboxes.forEach(cb => cb.addEventListener("change", () => {
-      if ([...checkboxes].every(c => c.checked)) saveCompletion();
-    }));
-  </script>
+            get(ref(db, "closingMOD")).then((snapshot) => {
+                const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
+
+                const entry = {
+                    outCard,
+                    completedBy: name,
+                    completedAt: timestamp,
+                    modAtTime
+                };
+
+                let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
+                history.push(entry);
+                localStorage.setItem("completionHistory", JSON.stringify(history));
+
+                document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+            }).catch((error) => {
+                alert("Failed to retrieve closing MOD from Firebase.");
+                console.error(error);
+            });
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if ([...checkboxes].every(cb => cb.checked)) {
+                    saveCompletion();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
