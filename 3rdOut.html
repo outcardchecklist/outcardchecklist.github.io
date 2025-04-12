@@ -6,42 +6,49 @@
   <title>3rd Out Tasks</title>
   <style>
     body {
-            font-family: 'Oswald', sans-serif;
-            background-color: #FFF;
-            color: #000;
-            text-align: center;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            width: 70%;
-            max-width: 800px;
-            padding: 30px;
-            border: 3px solid #000;
-            border-radius: 10px;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .task-container {
-            text-align: left;
-        }
-        .task-checkbox {
-            margin: 10px;
-        }
+      font-family: 'Oswald', sans-serif;
+      background-color: #FFF;
+      color: #000;
+      text-align: center;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 70%;
+      max-width: 800px;
+      padding: 30px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .task-container {
+      text-align: left;
+    }
+    .hidden-message {
+      display: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: green;
+    }
+    .task-checkbox {
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>3rd Out Tasks</h1>
     <div class="task-container">
-      <label><input type="checkbox" class="task-checkbox"> Restock line</label><br>
-      <label><input type="checkbox" class="task-checkbox"> Clean all lower shelves</label><br>
-      <label><input type="checkbox" class="task-checkbox"> Clean all counters and walls</label><br>
-      <label><input type="checkbox" class="task-checkbox"> Sweep and mop kitchen</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Make sure all food is stocked</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Do dishes as you go</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Sweep under all mats</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Mop under all mats</label><br>
       <label><input type="checkbox" class="task-checkbox"> Clean your station</label><br>
     </div>
+    <p id="message" class="hidden-message">Checkout with your closing cook</p>
   </div>
 
   <script type="module">
@@ -72,18 +79,27 @@
 
       get(ref(db, "closingMOD")).then(snapshot => {
         const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
-        const entry = { outCard, completedBy: name, completedAt: timestamp, closingMOD: modAtTime };
+        const entry = {
+          outCard,
+          completedBy: name,
+          completedAt: timestamp,
+          modAtTime
+        };
         push(ref(db, "completionHistory"), entry);
         document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
       }).catch(error => {
-        alert("Failed to save to Firebase.");
+        alert("Failed to retrieve closing MOD from Firebase.");
         console.error(error);
       });
     }
 
-    checkboxes.forEach(cb => cb.addEventListener("change", () => {
-      if ([...checkboxes].every(c => c.checked)) saveCompletion();
-    }));
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        if ([...checkboxes].every(c => c.checked)) {
+          saveCompletion();
+        }
+      });
+    });
   </script>
 </body>
 </html>
