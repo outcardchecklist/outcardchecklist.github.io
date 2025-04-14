@@ -54,7 +54,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
@@ -86,14 +86,16 @@
                     outCard,
                     completedBy: name,
                     completedAt: timestamp,
-                    modAtTime
+                    closingMOD: modAtTime
                 };
 
-                let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-                history.push(entry);
-                localStorage.setItem("completionHistory", JSON.stringify(history));
-
-                document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+                const historyRef = ref(db, "completionHistory");
+                push(historyRef, entry).then(() => {
+                    document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+                }).catch((error) => {
+                    alert("Failed to save completion to Firebase.");
+                    console.error(error);
+                });
             }).catch((error) => {
                 alert("Failed to retrieve closing MOD from Firebase.");
                 console.error(error);
