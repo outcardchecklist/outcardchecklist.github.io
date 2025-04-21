@@ -21,9 +21,26 @@
       font-weight: bold;
       color: darkblue;
     }
+    .back-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      padding: 10px 20px;
+      background-color: #ddd;
+      border: 2px solid #000;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .back-button:hover {
+      background-color: #ccc;
+    }
   </style>
 </head>
 <body>
+  <button class="back-button" onclick="window.location.href='Select.html'">← Back</button>
+
   <div class="container">
     <h1>Choose your outcard:</h1>
     <div class="button-container">
