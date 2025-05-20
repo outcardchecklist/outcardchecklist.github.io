@@ -6,23 +6,6 @@
   <title>Choose Your Outcard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .outcard-button {
-      display: block;
-      margin: 10px auto;
-      padding: 15px 30px;
-      font-size: 18px;
-      font-weight: bold;
-      font-family: 'Oswald', sans-serif;
-      background-color: #f5f5f5;
-      border: 2px solid #000;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .outcard-button:hover {
-      background-color: #ddd;
-    }
-
     .mod-button {
       margin-top: 20px;
       padding: 10px 20px;
@@ -31,12 +14,13 @@
       cursor: pointer;
       font-size: 16px;
       font-weight: bold;
-      font-family: 'Oswald', sans-serif;
     }
 
-    .container {
-      text-align: center;
-      padding: 50px 20px;
+    #mod-display {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: darkblue;
     }
 
     .back-button {
@@ -61,12 +45,13 @@
   <button class="back-button" onclick="window.location.href='Select.html'">← Back</button>
 
   <div class="container">
-    <h1>Server Outcards</h1>
+    <h1>Choose your outcard:</h1>
     <div class="button-container">
       <button class="outcard-button" onclick="location.href='S1stOut.html'">1st Out</button>
       <button class="outcard-button" onclick="location.href='S2ndOut.html'">2nd Out</button>
       <button class="outcard-button" onclick="location.href='S3rdOut.html'">3rd Out</button>
       <button class="outcard-button" onclick="location.href='S4thOut.html'">4th Out</button>
+      <button class="outcard-button" onclick="location.href='History.html'">History</button>
       <button class="mod-button" onclick="enterClosingMOD()">Enter Closing MOD</button>
     </div>
     <p id="mod-display">Current MOD: Loading...</p>
@@ -94,13 +79,11 @@
 
     const modDisplay = document.getElementById("mod-display");
 
-    // Real-time listener to display MOD
     onValue(modRef, (snapshot) => {
       const mod = snapshot.val();
       modDisplay.textContent = `Current MOD: ${mod || "None assigned"}`;
     });
 
-    // Function to prompt and update MOD
     window.enterClosingMOD = function () {
       const password = prompt("Enter password to set Closing MOD:");
       if (password !== "123") {
@@ -123,8 +106,6 @@
         alert("Closing MOD remains unchanged.");
       }
     };
-    </div>
-  </div>
-      </script>
+  </script>
 </body>
 </html>
