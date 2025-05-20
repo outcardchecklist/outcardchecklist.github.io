@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Choose Your Outcard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .mod-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #FFD700;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
+    #mod-display {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: darkblue;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      padding: 10px 20px;
+      background-color: #ddd;
+      border: 2px solid #000;
+      border-radius: 5px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <button class="back-button" onclick="window.location.href='Select.html'">← Back</button>
+
+  <div class="container">
+    <h1>Choose your outcard:</h1>
+    <div class="button-container">
+      <button class="outcard-button" onclick="location.href='C1stOut.html'">1st Out</button> 
+      <button class="outcard-button" onclick="location.href='C2ndOut.html'">2nd Out</button> 
+      <button class="outcard-button" onclick="location.href='C3rdOut.html'">3rd Out</button> 
+      <button class="outcard-button" onclick="location.href='History.html'">History</button>
+      <button class="mod-button" onclick="enterClosingMOD()">Enter Closing MOD</button>
+    </div>
+    <p id="mod-display">Current MOD: Loading...</p>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+      authDomain: "outcardchecklist.firebaseapp.com",
+      projectId: "outcardchecklist",
+      storageBucket: "outcardchecklist.firebasestorage.app",
+      messagingSenderId: "896455842388",
+      appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+      measurementId: "G-ZT882MFNZP",
+      databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const modRef = ref(db, "closingMOD");
+
+    const modDisplay = document.getElementById("mod-display");
+
+    onValue(modRef, (snapshot) => {
+      const mod = snapshot.val();
+      modDisplay.textContent = `Current MOD: ${mod || "None assigned"}`;
+    });
+
+    window.enterClosingMOD = function () {
+      const password = prompt("Enter password to set Closing MOD:");
+      if (password !== "123") {
+        alert("Incorrect password!");
+        return;
+      }
+
+      const currentMOD = modDisplay.textContent.replace("Current MOD: ", "");
+      const modName = prompt(`Current MOD: ${currentMOD}\nEnter new Closing MOD's name (or press Cancel to keep current):`);
+
+      if (modName && modName.trim() !== "") {
+        set(modRef, modName.trim())
+          .then(() => {
+            alert(`Closing MOD set to: ${modName}`);
+          })
+          .catch((error) => {
+            alert("Failed to set MOD: " + error.message);
+          });
+      } else {
+        alert("Closing MOD remains unchanged.");
+      }
+    };
+  </script>
+</body>
+</html>
