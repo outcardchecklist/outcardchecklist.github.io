@@ -1,1 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3rd Out Tasks</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Oswald', sans-serif;
+      background-color: #FFF;
+      color: #000;
+      text-align: center;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 70%;
+      max-width: 800px;
+      padding: 30px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    .task-container {
+      text-align: left;
+    }
+    .task-checkbox {
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>3rd Out Tasks</h1>
+    <div class="task-container">
+      <label><input type="checkbox" class="task-checkbox"> Wipe and clean windows and glass doors including the glass buffalo wall</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Collect, wipe and sanitize all menus</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Wipe and sanitize booster seats and highchairs</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Empty trash next to greeter stand</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Stock Pepsi cooler</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Sweep the front entrance of the store</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Empty trash in restrooms and check both restrooms and stock (empty in the large trash can in the dish pit)</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Stock trays, knives, forks, napkins and liners</label><br>
+      <label><input type="checkbox" class="task-checkbox"> Wipe down benches and wall behind benches (including glass for sauce bottle display)</label><br>
+    </div>
+  </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+      authDomain: "outcardchecklist.firebaseapp.com",
+      projectId: "outcardchecklist",
+      storageBucket: "outcardchecklist.appspot.com",
+      messagingSenderId: "896455842388",
+      appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+      measurementId: "G-ZT882MFNZP",
+      databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const checkboxes = document.querySelectorAll(".task-checkbox");
+
+    function saveCompletion() {
+      const name = prompt("Enter your name:");
+      if (!name) return;
+
+      const timestamp = new Date().toLocaleString();
+      const outCard = "C3rd Out";
+
+      get(ref(db, "closingMOD")).then(snapshot => {
+        const closingMOD = snapshot.exists() ? snapshot.val() : "None assigned";
+
+        const entry = {
+          outCard,
+          completedBy: name,
+          completedAt: timestamp,
+          closingMOD
+        };
+
+        push(ref(db, "completionHistory"), entry).then(() => {
+          document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+        }).catch(error => {
+          alert("Failed to save history to Firebase.");
+          console.error(error);
+        });
+      });
+    }
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", () => {
+        if ([...checkboxes].every(cb => cb.checked)) {
+          saveCompletion();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
