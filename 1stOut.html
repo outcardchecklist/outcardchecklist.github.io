@@ -75,7 +75,13 @@
             const outCard = "1st Out";
 
             get(ref(db, "closingMOD")).then(snapshot => {
-                const closingMOD = snapshot.exists() ? snapshot.val() : "None assigned";
+  if (snapshot.exists()) {
+    alert("Closing MOD is: " + snapshot.val());
+  } else {
+    alert("No MOD assigned");
+  }
+});
+
 
                 const entry = {
                     outCard,
