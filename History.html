@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  
 <head>
   <meta charset="UTF-8">
   <title>Completion History</title>
@@ -41,6 +42,7 @@
   </style>
 </head>
 <body>
+  
   <h1>Completion History</h1>
   <div class="button-container">
     <button id="clear-history">Clear History</button>
@@ -48,14 +50,7 @@
   </div>
   <div id="history-container"></div>
 
-  <script type="module">
-    const correctPassword = "123";
-  const enteredPassword = prompt("Enter password to view history:");
-
-  if (enteredPassword !== correctPassword) {
-    alert("Access denied.");
-    window.location.href = "index.html";
-    
+  <script type="module">   
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
