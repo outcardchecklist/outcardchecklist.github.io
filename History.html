@@ -41,6 +41,15 @@
   </style>
 </head>
 <body>
+
+  <script>
+    const password = prompt("Enter password to view history:");
+    if (password !== "123") {
+      alert("Access denied.");
+      window.location.href = "index.html"; // redirect to home
+    }
+  </script>
+
   <h1>Completion History</h1>
   <div class="button-container">
     <button id="clear-history">Clear History</button>
@@ -74,7 +83,6 @@
         container.innerHTML = "<p>No history found.</p>";
         return;
       }
-      
 
       const data = snapshot.val();
       const entries = Object.values(data);
@@ -82,12 +90,12 @@
       entries.forEach(entry => {
         const div = document.createElement("div");
         div.className = "entry";
-        div.innerHTML = 
+        div.innerHTML = `
           <strong>Out Card:</strong> ${entry.outCard} <br>
           <strong>Completed By:</strong> ${entry.completedBy} <br>
           <strong>Completed At:</strong> ${entry.completedAt} <br>
           <strong>Closing MOD:</strong> ${entry.closingMOD || "N/A"}
-        ;
+        `;
         container.appendChild(div);
       });
     });
@@ -105,7 +113,7 @@
           });
       }
     });
-</script>
+  </script>
 
 </body>
 </html>
