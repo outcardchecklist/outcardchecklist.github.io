@@ -74,7 +74,7 @@
       if (!name) return;
 
       const timestamp = new Date().toLocaleString();
-      const outCard = "C3rd Out";
+      const outCard = "Cashier 3rd Out";
 
       get(ref(db, "closingMOD")).then(snapshot => {
         const closingMOD = snapshot.exists() ? snapshot.val() : "None assigned";
@@ -87,7 +87,7 @@
         };
 
         push(ref(db, "completionHistory"), entry).then(() => {
-          document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+          document.body.innerHTML = `<h1>Checkout with your closing manager</h1>`;
         }).catch(error => {
           alert("Failed to save history to Firebase.");
           console.error(error);
