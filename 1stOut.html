@@ -41,6 +41,7 @@
 </head>
 <body>
     <div class="container">
+       <div class="container">
         <h1>1st Out Tasks</h1>
         <div class="task-container">
             <label><input type="checkbox" class="task-checkbox"> Empty trashes and replace bags</label><br>
@@ -55,7 +56,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        import { getDatabase, ref, get, push, child } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
@@ -70,7 +71,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
         const checkboxes = document.querySelectorAll(".task-checkbox");
 
         function saveCompletion() {
@@ -80,7 +80,6 @@
             const timestamp = new Date().toLocaleString();
             const outCard = "1st Out";
 
-            // Get closing MOD from Firebase
             get(ref(db, "closingMOD")).then((snapshot) => {
                 const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
 
@@ -88,14 +87,12 @@
                     outCard,
                     completedBy: name,
                     completedAt: timestamp,
-                    modAtTime // ✅ use MOD from Firebase
+                    modAtTime
                 };
 
-                let history = JSON.parse(localStorage.getItem("completionHistory")) || [];
-                history.push(entry);
-                localStorage.setItem("completionHistory", JSON.stringify(history));
+                const historyRef = ref(db, "completionHistory");
+                push(historyRef, entry);
 
-                // Show message
                 document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
             }).catch((error) => {
                 alert("Failed to retrieve closing MOD from Firebase.");
