@@ -49,6 +49,14 @@
   <div id="history-container"></div>
 
   <script type="module">
+     const correctPassword = "123"; 
+
+  const enteredPassword = prompt("Enter password to view history:");
+
+  if (enteredPassword !== correctPassword) {
+    alert("Access denied.");
+    return
+  }
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
@@ -106,14 +114,6 @@
       }
     });
 
-  const correctPassword = "123"; 
-
-  const enteredPassword = prompt("Enter password to view history:");
-
-  if (enteredPassword !== correctPassword) {
-    alert("Access denied.");
-    return
-  }
 </script>
 
 </body>
