@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bartender Out Tasks</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif;
+            background-color: #FFF;
+            color: #000;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 70%;
+            max-width: 800px;
+            padding: 30px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .task-container {
+            text-align: left;
+        }
+        .hidden-message {
+            display: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+        }
+        .task-checkbox {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bartender Out Tasks</h1>
+        <div class="task-container">
+            <label><input type="checkbox" class="task-checkbox"> All cups washed and put away</label><br>
+            <label><input type="checkbox" class="task-checkbox"> All dishes cleaned and put back out for the morning</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Sinks cleared, wiped and sprayed out</label><br>
+            <label><input type="checkbox" class="task-checkbox"> All surfaces wiped with sanitizer, including high top tables</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Silverware, napkins and takeout boxes stocked</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Bottle cooler stocked, faced and the light turned off</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Liquor bottles in the proper spots with a black cap on them</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Beer spouts covered with the blue spout stoppers</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Soda gun broke down with the nozzle sprayed with sanitizer and left out to dry</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Beer tower grates cleaned and left propped up to dry</label><br>
+            <label><input type="checkbox" class="task-checkbox"> Drink expo grate cleaned and propped up to dry</label><br>
+        </div>
+        <p id="message" class="hidden-message">Checkout with your closing cook</p>
+    </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+            authDomain: "outcardchecklist.firebaseapp.com",
+            projectId: "outcardchecklist",
+            storageBucket: "outcardchecklist.appspot.com",
+            messagingSenderId: "896455842388",
+            appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+            measurementId: "G-ZT882MFNZP",
+            databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const checkboxes = document.querySelectorAll(".task-checkbox");
+
+        function saveCompletion() {
+            const name = prompt("Enter your name:");
+            if (!name) return;
+
+            const timestamp = new Date().toLocaleString();
+            const outCard = "Bartender Out";
+
+            get(ref(db, "closingMOD")).then((snapshot) => {
+                const modAtTime = snapshot.exists() ? snapshot.val() : "None assigned";
+
+                const entry = {
+                    outCard,
+                    completedBy: name,
+                    completedAt: timestamp,
+                    modAtTime
+                };
+
+                const historyRef = ref(db, "completionHistory");
+                push(historyRef, entry);
+
+                document.body.innerHTML = `<h1>Checkout with your closing manager</h1>`;
+            }).catch((error) => {
+                alert("Failed to retrieve closing MOD from Firebase.");
+                console.error(error);
+            });
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if ([...checkboxes].every(cb => cb.checked)) {
+                    saveCompletion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
