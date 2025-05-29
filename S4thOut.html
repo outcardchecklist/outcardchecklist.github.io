@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Fryers Out Tasks</title>
+    <title>4th Out Tasks</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         body {
@@ -35,7 +35,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Fryers Out Tasks</h1>
+        <h1>4th Out Tasks</h1>
         <div class="task-container">
             <label><input type="checkbox" class="task-checkbox"> Sweep the section for larger debris and Bissel.</label><br>
             <label><input type="checkbox" class="task-checkbox"> Stock caddies… full ketchup bottles, wet naps, salt, and peppers.</label><br>
@@ -77,7 +77,7 @@
             if (!name) return;
 
             const timestamp = new Date().toLocaleString();
-            const outCard = "Fryers Out";
+            const outCard = "Server 4th Out";
 
             get(ref(db, "closingMOD")).then(snapshot => {
                 const closingMOD = snapshot.exists() ? snapshot.val() : "None assigned";
@@ -90,7 +90,7 @@
                 };
 
                 push(ref(db, "completionHistory"), entry).then(() => {
-                    document.body.innerHTML = `<h1>Checkout with your closing cook</h1>`;
+                    document.body.innerHTML = `<h1>Checkout with your closing manager</h1>`;
                 }).catch(error => {
                     alert("Failed to save history to Firebase.");
                     console.error(error);
