@@ -1,67 +1,68 @@
 <script type="module">
   const correctPassword = "123";
-
   const enteredPassword = prompt("Enter password to view history:");
+
   if (enteredPassword !== correctPassword) {
     alert("Access denied.");
-    // Redirect away or simply stop execution
-    window.location.href = "index.html"; // or any other page
-    // or: throw new Error("Access denied.");
+    window.location.href = "index.html"; // redirect away
   } else {
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    // Use dynamic imports only after password confirmation
+    (async () => {
+      const { initializeApp } = await import("https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js");
+      const { getDatabase, ref, get, remove } = await import("https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js");
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
-      authDomain: "outcardchecklist.firebaseapp.com",
-      projectId: "outcardchecklist",
-      storageBucket: "outcardchecklist.appspot.com",
-      messagingSenderId: "896455842388",
-      appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
-      measurementId: "G-ZT882MFNZP",
-      databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
-    };
+      const firebaseConfig = {
+        apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+        authDomain: "outcardchecklist.firebaseapp.com",
+        projectId: "outcardchecklist",
+        storageBucket: "outcardchecklist.appspot.com",
+        messagingSenderId: "896455842388",
+        appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+        measurementId: "G-ZT882MFNZP",
+        databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+      };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const historyRef = ref(db, "completionHistory");
-    const container = document.getElementById("history-container");
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const historyRef = ref(db, "completionHistory");
+      const container = document.getElementById("history-container");
 
-    // Load history from Firebase
-    get(historyRef).then(snapshot => {
-      if (!snapshot.exists()) {
-        container.innerHTML = "<p>No history found.</p>";
-        return;
-      }
+      // Load history from Firebase
+      get(historyRef).then(snapshot => {
+        if (!snapshot.exists()) {
+          container.innerHTML = "<p>No history found.</p>";
+          return;
+        }
 
-      const data = snapshot.val();
-      const entries = Object.values(data);
+        const data = snapshot.val();
+        const entries = Object.values(data);
 
-      entries.forEach(entry => {
-        const div = document.createElement("div");
-        div.className = "entry";
-        div.innerHTML = `
-          <strong>Out Card:</strong> ${entry.outCard} <br>
-          <strong>Completed By:</strong> ${entry.completedBy} <br>
-          <strong>Completed At:</strong> ${entry.completedAt} <br>
-          <strong>Closing MOD:</strong> ${entry.closingMOD || "N/A"}
-        `;
-        container.appendChild(div);
+        entries.forEach(entry => {
+          const div = document.createElement("div");
+          div.className = "entry";
+          div.innerHTML = `
+            <strong>Out Card:</strong> ${entry.outCard} <br>
+            <strong>Completed By:</strong> ${entry.completedBy} <br>
+            <strong>Completed At:</strong> ${entry.completedAt} <br>
+            <strong>Closing MOD:</strong> ${entry.closingMOD || "N/A"}
+          `;
+          container.appendChild(div);
+        });
       });
-    });
 
-    // Clear Firebase History
-    document.getElementById("clear-history").addEventListener("click", () => {
-      if (confirm("Are you sure you want to clear all history?")) {
-        remove(historyRef)
-          .then(() => {
-            container.innerHTML = "<p>History cleared.</p>";
-          })
-          .catch(error => {
-            alert("Failed to clear history.");
-            console.error(error);
-          });
-      }
-    });
+      // Clear Firebase History
+      document.getElementById("clear-history").addEventListener("click", () => {
+        if (confirm("Are you sure you want to clear all history?")) {
+          remove(historyRef)
+            .then(() => {
+              container.innerHTML = "<p>History cleared.</p>";
+            })
+            .catch(error => {
+              alert("Failed to clear history.");
+              console.error(error);
+            });
+        }
+      });
+    })();
   }
 </script>
