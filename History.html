@@ -74,6 +74,7 @@
         container.innerHTML = "<p>No history found.</p>";
         return;
       }
+      
 
       const data = snapshot.val();
       const entries = Object.values(data);
@@ -104,6 +105,16 @@
           });
       }
     });
-  </script>
+
+  const correctPassword = "123"; 
+
+  const enteredPassword = prompt("Enter password to view history:");
+
+  if (enteredPassword !== correctPassword) {
+    alert("Access denied.");
+    return
+  }
+</script>
+
 </body>
 </html>
