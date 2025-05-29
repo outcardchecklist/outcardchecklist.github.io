@@ -1,1 +1,31 @@
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBoI9vQo5h3AJQUopsMb-oYEIbfYq81fSI",
+    authDomain: "outcardchecklist.firebaseapp.com",
+    projectId: "outcardchecklist",
+    storageBucket: "outcardchecklist.appspot.com",
+    messagingSenderId: "896455842388",
+    appId: "1:896455842388:web:78a3c22808ad5a772a6bc1",
+    measurementId: "G-ZT882MFNZP",
+    databaseURL: "https://outcardchecklist-default-rtdb.firebaseio.com"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // READ
+  get(ref(db, "closingMOD")).then(snapshot => {
+    console.log("MOD in Firebase:", snapshot.val());
+  });
+
+  // UNLOCKED WRITE TEST
+  set(ref(db, "closingMOD"), "Test MOD").then(() => {
+    alert("MOD successfully set to Test MOD");
+  }).catch(error => {
+    alert("Write failed: " + error.message);
+  });
+</script>
 
